@@ -20,7 +20,7 @@ With csv's in the current directory containing the following columns:
 - comment
   - additional blurb (I often use to start pre-planning video structure)
 
-Before running, at the top of `downloader.py`, adjust config constants to your
+Before running, at the top of `clipper.py`, adjust config constants to your
 needs.
 
 For an example of input, the following sheet is an example that would work well
@@ -41,4 +41,4 @@ Running
 Using `pipenv` to run:
 
     $ pipenv install
-    $ pipenv run python downloader.py
+    $ pipenv run python clipper.py

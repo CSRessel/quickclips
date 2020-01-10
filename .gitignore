@@ -1,3 +1,4 @@
+*.csv
 *.mp4
 
 # Created by https://www.gitignore.io/api/vim,python

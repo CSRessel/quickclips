@@ -1,3 +1,4 @@
+import glob
 import os
 import shutil
 from pathlib import Path
@@ -14,8 +15,8 @@ MAKE_VIDS = True
 MAKE_CLIPS = True
 
 # seconds relative each timestamp (before and after) to clip out
-CLIP_WINDOW_START = 10
-CLIP_WINDOW_END = 10
+CLIP_WINDOW_START = 5
+CLIP_WINDOW_END = 5
 # same, but in the event of replays or slomos as determined in spreadsheet
 CLIP_WINDOW_START_REPLAY = 10
 CLIP_WINDOW_END_REPLAY = 40
@@ -30,10 +31,12 @@ def prep_for_file_path(string):
 
 
 def main():
-    os.makedirs(WORKDIR, exist_ok=True)
-    for f in Path('./').rglob('*.csv'):
-        shutil.copy2(f, WORKDIR)
-    os.chdir(WORKDIR)
+
+    if WORKDIR:
+        os.makedirs(WORKDIR, exist_ok=True)
+        for f in glob.glob(str(Path('./') / '*.csv')):
+            shutil.copy2(f, WORKDIR)
+        os.chdir(WORKDIR)
 
     for highlight_sheet in Path('./').rglob('*.csv'):
         highlight = str(highlight_sheet)
@@ -66,11 +69,23 @@ def main():
                     if not [v for v in folder_name.rglob('*.mp4') if os.path.isfile(v)]:
                         print(f'downloading {name}')
 
-                        vid.streams.first().download(folder_name)
+                        stream = (
+                            vid.streams
+                            # progressive: audio and video in one file
+                            # mp4: to work with ffmpeg
+                            .filter(progressive=True, file_extension='mp4')
+                            # retrieve highest resolution
+                            .order_by('resolution')
+                            .desc()
+                            .first()
+                        )
+                        
+                        stream.download(folder_name)
                     else:
                         print(f'video exists in {name}... skipping')
 
         if MAKE_CLIPS:
+
             for df_bout, folder_name in bout_queue:
                 # required that there's a video in this directory!
                 video_name = os.listdir(folder_name)[0]
@@ -105,6 +120,7 @@ def main():
 
                         ffmpeg_extract_subclip(vid_in_name, window_start,
                                                window_end, clip_out_name)
+
 
 if __name__ == '__main__':
     main()
