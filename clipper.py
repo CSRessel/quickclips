@@ -56,7 +56,11 @@ def main():
         for link, df_bout in df.groupby('link'):
             if pd.notna(link):
                 # construct folder/file name
-                vid = YouTube(link)
+                try:
+                    vid = YouTube(link)
+                except:
+                    print(f'pytube blew up on video: {link}')
+                    continue
                 name = prep_for_file_path(vid.title)
                 folder_name = Path(highlight) / Path(name)
 
