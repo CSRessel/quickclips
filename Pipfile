@@ -7,8 +7,8 @@ verify_ssl = true
 
 [packages]
 pandas = "*"
-pytube = {git = "https://github.com/giacaglia/pytube.git"}
 moviepy = "*"
+pytube3 = "*"
 
 [requires]
 python_version = "3.8"
