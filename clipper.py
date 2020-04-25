@@ -15,8 +15,8 @@ MAKE_VIDS = True
 MAKE_CLIPS = True
 
 # seconds relative each timestamp (before and after) to clip out
-CLIP_WINDOW_START = 5
-CLIP_WINDOW_END = 5
+CLIP_WINDOW_START = 20
+CLIP_WINDOW_END = 20
 # same, but in the event of replays or slomos as determined in spreadsheet
 CLIP_WINDOW_START_REPLAY = 10
 CLIP_WINDOW_END_REPLAY = 40
@@ -60,13 +60,13 @@ def main():
                 name = prep_for_file_path(vid.title)
                 folder_name = Path(highlight) / Path(name)
 
-                os.makedirs(folder_name, exist_ok=True)
-
                 bout_queue.append((df_bout, folder_name))
 
                 if MAKE_VIDS:
                     # downloading the video if none exists in folder
                     if not [v for v in folder_name.rglob('*.mp4') if os.path.isfile(v)]:
+
+                        os.makedirs(folder_name, exist_ok=True)
                         print(f'downloading {name}')
 
                         stream = (
@@ -79,7 +79,7 @@ def main():
                             .desc()
                             .first()
                         )
-                        
+
                         stream.download(folder_name)
                     else:
                         print(f'video exists in {name}... skipping')
@@ -88,6 +88,9 @@ def main():
 
             for df_bout, folder_name in bout_queue:
                 # required that there's a video in this directory!
+                if not os.listdir(folder_name):
+                    continue
+
                 video_name = os.listdir(folder_name)[0]
                 assert video_name
 
