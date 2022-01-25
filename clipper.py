@@ -15,15 +15,18 @@ MAKE_VIDS = True
 MAKE_CLIPS = True
 
 # seconds relative each timestamp (before and after) to clip out
-CLIP_WINDOW_START = 20
-CLIP_WINDOW_END = 20
+CLIP_WINDOW_START = 10
+CLIP_WINDOW_END = 10
 # same, but in the event of replays or slomos as determined in spreadsheet
-CLIP_WINDOW_START_REPLAY = 10
-CLIP_WINDOW_END_REPLAY = 40
+CLIP_WINDOW_START_REPLAY = 20
+CLIP_WINDOW_END_REPLAY = 30
 # files will be written to this new folder in the current directory
 WORKDIR = 'video_output/'
 # judgement column values worthy of clipping
 JUDGEMENT_TO_CLIP = ['nice', 'great', 'perf']
+
+# how many characters of videoname to use in file output names/logging
+VIDEONAME_CUTOFF = 16
 
 
 def prep_for_file_path(string):
@@ -55,6 +58,8 @@ def main():
 
         for link, df_bout in df.groupby('link'):
             if pd.notna(link):
+                print(f'accessing {link}')
+
                 # construct folder/file name
                 try:
                     vid = YouTube(link)
@@ -101,7 +106,7 @@ def main():
                 offset_start = CLIP_WINDOW_START
                 offset_end = CLIP_WINDOW_END
                 if df_bout.replay.any():
-                    print(f'{video_name[:20]} has replay, increasing clip length')
+                    print(f'{video_name[:VIDEONAME_CUTOFF]} has replay, increasing clip length')
 
                     offset_start = CLIP_WINDOW_START_REPLAY
                     offset_end = CLIP_WINDOW_END_REPLAY
@@ -123,7 +128,9 @@ def main():
                             blurb += f'__{comment}'
 
                         vid_in_name = str(folder_name) + '/' + video_name
-                        clip_out_name = f'{highlight}/{prep_for_file_path(video_name[:20])}__{blurb}.mp4'
+                        # sometimes the files overwrite if you're clipping many similar highlights from one video,
+                        # hence min/sec are necessary in the filename
+                        clip_out_name = f'{highlight}/{prep_for_file_path(video_name[VIDEONAME_CUTOFF])}__{blurb}__{min}_{sec}.mp4'
 
                         ffmpeg_extract_subclip(vid_in_name, window_start,
                                                window_end, clip_out_name)
