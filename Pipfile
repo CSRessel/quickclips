@@ -8,7 +8,7 @@ verify_ssl = true
 [packages]
 pandas = "==1.4.0"
 moviepy = "==1.0.3"
-pytube = "==11.0.2"
+pytube = "==12.1.0"
 
 [requires]
 python_version = "3.8"
