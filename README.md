@@ -4,6 +4,7 @@ in making highlights sourced from youtube!)
 
 Input Structure
 ---
+
 With csv's in the current directory containing the following columns:
 
 - link (required)
@@ -42,3 +43,15 @@ Using `pipenv` to run:
 
     $ pipenv install
     $ pipenv run python clipper.py
+
+Debugging
+----
+
+Frequently, YouTube HTML page structure changes require a new version of pytube in order to scrape videos.
+If there seem to be errors from within the pytube library, try updating to
+[the latest pytube release on pypi](https://pypi.org/project/pytube/).
+
+If there are still errors downloading videos and you have access to locally
+stored footage, you can also make changes to the how the queue of videos is
+constructed, and place the videos into individual folders (each within the
+`video_output/<CSV_SHEET_NAME>/` folder by default).

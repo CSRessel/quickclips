@@ -6,9 +6,9 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-pandas = "*"
-moviepy = "*"
-pytube = "*"
+pandas = "==1.4.0"
+moviepy = "==1.0.3"
+pytube = "==11.0.2"
 
 [requires]
 python_version = "3.8"
