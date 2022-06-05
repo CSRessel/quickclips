@@ -30,7 +30,7 @@ VIDEONAME_CUTOFF = 16
 
 
 def prep_for_file_path(string):
-    return '_'.join([w.strip() for w in string[:30].split()])
+    return '_'.join([w.strip() for w in string[:VIDEONAME_CUTOFF].split()])
 
 
 def main():
@@ -130,7 +130,7 @@ def main():
                         vid_in_name = str(folder_name) + '/' + video_name
                         # sometimes the files overwrite if you're clipping many similar highlights from one video,
                         # hence min/sec are necessary in the filename
-                        clip_out_name = f'{highlight}/{prep_for_file_path(video_name[VIDEONAME_CUTOFF])}__{blurb}__{min}_{sec}.mp4'
+                        clip_out_name = f'{highlight}/{prep_for_file_path(video_name)}__{blurb}__{min}_{sec}.mp4'
 
                         ffmpeg_extract_subclip(vid_in_name, window_start,
                                                window_end, clip_out_name)
